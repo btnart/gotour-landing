@@ -165,7 +165,7 @@
   --radius-full: var(--corner-full);
 
   /* Font */
-  --font-brand: 'Noto Sans TC', sans-serif;
+  --font-brand: 'Roboto', 'Noto Sans TC', sans-serif;
 
   /* Elevation */
   --shadow-elevation-1: var(--elevation-1);
@@ -178,7 +178,7 @@
 body {
   background: var(--ads-background);
   color: var(--ads-on-background);
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Roboto', 'Noto Sans TC', sans-serif;
 }
 
 /* ===== ADS Typography Utilities ===== */
