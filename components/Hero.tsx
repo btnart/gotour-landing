@@ -83,10 +83,10 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4 mb-12">
-            <a href="#contact" className="px-8 py-4 bg-primary text-on-primary rounded-full ads-label-large hover:brightness-110 transition-all shadow-lg shadow-primary/20">
+            <a href="#contact" className="ads-btn ads-btn-filled ads-btn-lg">
               免費預約展示 →
             </a>
-            <a href="#cases" className="px-8 py-4 border border-outline-variant text-on-surface-variant rounded-full ads-label-large hover:bg-surface-container hover:text-on-surface transition-all">
+            <a href="#cases" className="ads-btn ads-btn-outlined-neutral ads-btn-lg">
               查看成功案例
             </a>
           </div>

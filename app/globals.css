@@ -213,6 +213,71 @@ body {
   .ads-title-small     { font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.5px !important; }
 }
 
+/* ===== ADS Button Components (Section 9.1) ===== */
+/* Button-Pilled: filled, accent — all properties use !important to override Tailwind */
+.ads-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--corner-full) !important;
+  font-family: 'Roboto', 'Noto Sans TC', sans-serif !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  border: none !important;
+  text-decoration: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: box-shadow 0.2s, transform 0.2s !important;
+}
+/* State layer overlay */
+.ads-btn::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: currentColor !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s !important;
+  pointer-events: none !important;
+}
+.ads-btn:hover::after  { opacity: 0.08 !important; }   /* 8% */
+.ads-btn:focus-visible::after { opacity: 0.10 !important; }   /* 10% */
+.ads-btn:active::after { opacity: 0.10 !important; } /* 10% */
+
+/* Sizes — Label Medium for SM, Label Large for MD/LG */
+.ads-btn-sm { height: 32px !important; padding: 0 16px !important; font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.5px !important; }
+.ads-btn-md { height: 40px !important; padding: 0 24px !important; font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important; }
+.ads-btn-lg { height: 48px !important; padding: 0 32px !important; font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important; }
+
+/* Filled + Accent */
+.ads-btn-filled {
+  background: var(--ads-primary) !important;
+  color: var(--ads-on-primary) !important;
+}
+.ads-btn-filled:hover {
+  box-shadow: var(--elevation-1) !important;
+}
+
+/* Outlined + Accent */
+.ads-btn-outlined {
+  background: transparent !important;
+  color: var(--ads-primary) !important;
+  border: 1px solid var(--ads-outline) !important;
+}
+
+/* Outlined + Neutral */
+.ads-btn-outlined-neutral {
+  background: transparent !important;
+  color: var(--ads-on-surface-variant) !important;
+  border: 1px solid var(--ads-outline-variant) !important;
+}
+
+/* Disabled */
+.ads-btn:disabled, .ads-btn[aria-disabled="true"] {
+  opacity: 0.38 !important;
+  pointer-events: none !important;
+}
+
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;

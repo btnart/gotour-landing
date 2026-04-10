@@ -174,9 +174,9 @@ export default function CaseStudies() {
             <button
               key={t}
               onClick={() => setActiveTab(t)}
-              className={`px-5 py-2.5 rounded-full ads-label-large transition-all duration-300 ${
+              className={`ads-btn ads-btn-sm transition-all duration-300 ${
                 activeTab === t
-                  ? "bg-primary text-on-primary shadow-lg shadow-primary/20"
+                  ? "ads-btn-filled"
                   : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
               }`}
             >

@@ -41,7 +41,7 @@ export default function Navbar() {
           <a href="#ai-service" className="text-on-surface-variant hover:text-primary transition-colors text-sm">AI 客服</a>
           <a href="#cases" className="text-on-surface-variant hover:text-primary transition-colors text-sm">成功案例</a>
           <a href="#process" className="text-on-surface-variant hover:text-primary transition-colors text-sm">導入流程</a>
-          <a href="#contact" className="ml-4 px-5 py-2 bg-primary text-on-primary rounded-full text-sm font-medium hover:brightness-110 transition-all">預約展示</a>
+          <a href="#contact" className="ml-4 ads-btn ads-btn-filled ads-btn-sm">預約展示</a>
         </div>
       </div>
     </nav>

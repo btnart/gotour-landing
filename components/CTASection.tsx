@@ -29,16 +29,10 @@ export default function CTASection() {
 
           <ScrollReveal delay={0.2}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href="mailto:hello@gotour.io"
-                className="px-8 py-4 bg-primary text-on-primary rounded-full ads-label-large hover:brightness-110 transition-all shadow-lg shadow-primary/20"
-              >
+              <a href="mailto:hello@gotour.io" className="ads-btn ads-btn-filled ads-btn-lg">
                 預約免費展示 →
               </a>
-              <a
-                href="#"
-                className="px-8 py-4 border border-outline-variant text-on-surface-variant rounded-full ads-label-large hover:bg-surface-container hover:text-on-surface transition-all"
-              >
+              <a href="#" className="ads-btn ads-btn-outlined-neutral ads-btn-lg">
                 下載合作提案
               </a>
             </div>
