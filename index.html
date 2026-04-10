@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoTour — AI 智慧語音導覽</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ===== ADS Design Tokens ===== */
+    :root {
+      --ads-surface: #191919;
+      --ads-surface-dim: #191919;
+      --ads-surface-bright: #4D4D4D;
+      --ads-surface-container-lowest: #000000;
+      --ads-surface-container-low: #191919;
+      --ads-surface-container: #353535;
+      --ads-surface-container-high: #424242;
+      --ads-surface-container-highest: #595959;
+      --ads-on-surface: #E7E7E7;
+      --ads-on-surface-variant: #C4C4C4;
+      --ads-on-surface-hint: #858585;
+      --ads-inverse-surface: #E2E2E2;
+      --ads-inverse-on-surface: #4D4D4D;
+      --ads-inverse-primary: #BA9972;
+      --ads-primary: #BA9972;
+      --ads-on-primary: #0F0C09;
+      --ads-primary-container: #7A654B;
+      --ads-on-primary-container: #FEE3C4;
+      --ads-secondary: #C4C4C4;
+      --ads-on-secondary: #191919;
+      --ads-secondary-container: #595959;
+      --ads-on-secondary-container: #E7E7E7;
+      --ads-tertiary: #858585;
+      --ads-on-tertiary: #FFFFFF;
+      --ads-tertiary-container: #474747;
+      --ads-on-tertiary-container: #F8F8F8;
+      --ads-error: #F36363;
+      --ads-on-error: #2B0706;
+      --ads-error-container: #410E0B;
+      --ads-on-error-container: #EE8484;
+      --ads-success: #82D28A;
+      --ads-on-success: #002105;
+      --ads-success-container: #00390F;
+      --ads-on-success-container: #86DD8F;
+      --ads-warning: #EFCE5A;
+      --ads-on-warning: #3B2F00;
+      --ads-warning-container: #534300;
+      --ads-on-warning-container: #F4DB85;
+      --ads-background: #000000;
+      --ads-on-background: #E7E7E7;
+      --ads-outline: #858585;
+      --ads-outline-variant-medium: #6D6D6D;
+      --ads-outline-variant: #595959;
+      --ads-shadow: #000000;
+      --ads-scrim: rgba(0,0,0,0.5);
+      --ads-section-bg: #000000;
+      --ads-primary-fixed: #DDB586;
+      --ads-on-primary-fixed: #0F0C09;
+      --ads-primary-fixed-dim: #BA9972;
+      --ads-secondary-fixed: #F0F0F0;
+      --corner-none: 0px;
+      --corner-xs: 4px;
+      --corner-sm: 8px;
+      --corner-md: 12px;
+      --corner-lg: 16px;
+      --corner-lg-inc: 20px;
+      --corner-xl: 28px;
+      --corner-xl-inc: 32px;
+      --corner-xxl: 48px;
+      --corner-full: 1000px;
+      --opacity-hover: 0.08;
+      --opacity-focus: 0.10;
+      --opacity-pressed: 0.10;
+      --opacity-dragged: 0.16;
+      --opacity-disabled-container: 0.12;
+      --opacity-disabled-content: 0.38;
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ads-background);
+      color: var(--ads-on-background);
+      font-family: 'Roboto', 'Noto Sans TC', sans-serif;
+      line-height: 1.5;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { font-family: inherit; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--ads-surface); }
+    ::-webkit-scrollbar-thumb { background: var(--ads-surface-container-high); border-radius: var(--corner-full); }
+
+    /* ===== ADS Typography Utilities ===== */
+    /* Using !important to ensure ADS tokens override any conflicting CSS specificity */
+    .ads-display-large   { font-size: 57px !important; line-height: 64px !important; letter-spacing: -0.25px !important; font-weight: 600 !important; }
+    .ads-display-medium  { font-size: 45px !important; line-height: 52px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+    .ads-display-small   { font-size: 36px !important; line-height: 44px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+    .ads-headline-large  { font-size: 32px !important; line-height: 40px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+    .ads-headline-medium { font-size: 28px !important; line-height: 36px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+    .ads-headline-small  { font-size: 24px !important; line-height: 32px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+    .ads-title-large     { font-size: 18px !important; line-height: 28px !important; letter-spacing: 0 !important;       font-weight: 500 !important; }
+    .ads-title-medium    { font-size: 16px !important; line-height: 24px !important; letter-spacing: 0.15px !important;  font-weight: 500 !important; }
+    .ads-title-small     { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important;   font-weight: 500 !important; }
+    .ads-label-large     { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important;   font-weight: 500 !important; }
+    .ads-label-medium    { font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.5px !important;   font-weight: 500 !important; }
+    .ads-label-small     { font-size: 11px !important; line-height: 16px !important; letter-spacing: 0.5px !important;   font-weight: 500 !important; }
+    .ads-body-large      { font-size: 16px !important; line-height: 24px !important; letter-spacing: 0.5px !important;   font-weight: 400 !important; }
+    .ads-body-medium     { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.25px !important;  font-weight: 400 !important; }
+    .ads-body-small      { font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.4px !important;   font-weight: 400 !important; }
+
+    @media (max-width: 768px) {
+      .ads-display-medium  { font-size: 36px !important; line-height: 44px !important; }
+      .ads-display-small   { font-size: 32px !important; line-height: 40px !important; }
+      .ads-headline-large  { font-size: 28px !important; line-height: 32px !important; }
+      .ads-headline-medium { font-size: 24px !important; line-height: 36px !important; }
+      .ads-headline-small  { font-size: 20px !important; line-height: 28px !important; }
+      .ads-title-large     { font-size: 16px !important; line-height: 24px !important; letter-spacing: 0.15px !important; }
+      .ads-title-medium    { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important; }
+      .ads-title-small     { font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.5px !important; }
+    }
+
+    /* ===== Keyframe Animations ===== */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+    @keyframes waveMove {
+      0%   { transform: scaleY(1); }
+      100% { transform: scaleY(0.6); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.5; }
+    }
+
+    /* ===== Scroll Reveal ===== */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== Layout ===== */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+    /* ===== Color Helpers ===== */
+    .c-primary         { color: var(--ads-primary); }
+    .c-on-surface      { color: var(--ads-on-surface); }
+    .c-on-surface-v    { color: var(--ads-on-surface-variant); }
+    .c-on-surface-hint { color: var(--ads-on-surface-hint); }
+    .c-success         { color: var(--ads-success); }
+    .c-primary-fixed   { color: var(--ads-primary-fixed); }
+
+    /* ===== Badge pill (shared) ===== */
+    .badge-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 4px 12px; border-radius: var(--corner-full);
+      background: rgba(186,153,114,0.10);
+      border: 1px solid rgba(186,153,114,0.20);
+      margin-bottom: 20px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 32px;
+      background: var(--ads-primary); color: var(--ads-on-primary);
+      border-radius: var(--corner-full);
+      font-size: 14px; font-weight: 500; letter-spacing: 0.1px;
+      box-shadow: 0 8px 24px rgba(186,153,114,0.20);
+      transition: filter 0.2s;
+    }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-outline {
+      display: inline-block;
+      padding: 16px 32px;
+      border: 1px solid rgba(89,89,89,0.6);
+      color: var(--ads-on-surface-variant);
+      border-radius: var(--corner-full);
+      font-size: 14px; font-weight: 500; letter-spacing: 0.1px;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { background: var(--ads-surface-container); color: var(--ads-on-surface); }
+
+    /* =========================================
+       NAVBAR
+    ========================================= */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      transition: all 0.3s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(25,25,25,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(89,89,89,0.40);
+    }
+    .navbar-inner {
+      max-width: 1280px; margin: 0 auto; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-logo { display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 32px; height: 32px; border-radius: var(--corner-sm);
+      background: var(--ads-primary);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .navbar-links { display: flex; align-items: center; gap: 32px; }
+    .navbar-links a {
+      font-size: 14px; color: var(--ads-on-surface-variant);
+      transition: color 0.2s;
+    }
+    .navbar-links a:hover { color: var(--ads-primary); }
+    .navbar-cta {
+      margin-left: 16px; padding: 8px 20px;
+      background: var(--ads-primary); color: var(--ads-on-primary);
+      border-radius: var(--corner-full);
+      font-size: 14px; font-weight: 500;
+      transition: filter 0.2s;
+    }
+    .navbar-cta:hover { filter: brightness(1.1); }
+    @media (max-width: 768px) { .navbar-links { display: none; } }
+
+    /* =========================================
+       HERO
+    ========================================= */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--ads-background) 0%, var(--ads-surface) 50%, var(--ads-background) 100%);
+    }
+    .hero-blob-1 {
+      position: absolute; top: 25%; left: 25%;
+      width: 384px; height: 384px;
+      background: rgba(186,153,114,0.10);
+      border-radius: 50%; filter: blur(120px);
+      animation: pulse 4s ease-in-out infinite;
+    }
+    .hero-blob-2 {
+      position: absolute; bottom: 33%; right: 33%;
+      width: 320px; height: 320px;
+      background: rgba(186,153,114,0.05);
+      border-radius: 50%; filter: blur(100px);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: 0.03;
+      background-image:
+        linear-gradient(rgba(186,153,114,0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(186,153,114,0.3) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-content {
+      position: relative; z-index: 10; width: 100%;
+      max-width: 1280px; margin: 0 auto; padding: 128px 24px 160px;
+      display: flex; flex-direction: column; align-items: center; gap: 80px;
+    }
+    @media (min-width: 1024px) {
+      .hero-content { flex-direction: row; align-items: center; }
+    }
+
+    /* Hero text */
+    .hero-text {
+      flex: 1; text-align: center;
+      animation: fadeSlideUp 0.8s ease forwards;
+    }
+    @media (min-width: 1024px) { .hero-text { text-align: left; } }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: var(--corner-full);
+      background: rgba(186,153,114,0.10); border: 1px solid rgba(186,153,114,0.20);
+      margin-bottom: 40px;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--ads-success); animation: pulse 2s ease-in-out infinite;
+    }
+    .hero-h1 { color: var(--ads-on-surface); margin-bottom: 32px; }
+    .hero-h1 em { color: var(--ads-primary); font-style: normal; }
+    .hero-desc {
+      color: var(--ads-on-surface-variant); max-width: 560px;
+      margin-bottom: 48px; line-height: 1.8;
+    }
+    .hero-btns {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      justify-content: center; margin-bottom: 48px;
+    }
+    @media (min-width: 1024px) { .hero-btns { justify-content: flex-start; } }
+
+    .trust-badges {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+      justify-content: center;
+    }
+    @media (min-width: 1024px) { .trust-badges { justify-content: flex-start; } }
+    .trust-badge {
+      padding: 4px 12px; border-radius: var(--corner-full);
+      border: 1px solid rgba(89,89,89,0.40);
+    }
+
+    /* Phone mockup */
+    .hero-phone {
+      flex-shrink: 0; width: 280px;
+      animation: fadeSlideUp 0.8s ease 0.3s both;
+    }
+    .phone-wrapper { position: relative; }
+    .phone-frame {
+      aspect-ratio: 9/19;
+      border-radius: 36px; background: var(--ads-surface-container);
+      border: 1px solid rgba(89,89,89,0.30); padding: 12px;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.50);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    /* Dynamic Island */
+    .phone-di {
+      display: flex; justify-content: center; flex-shrink: 0;
+    }
+    .phone-di-pill {
+      width: 80px; height: 20px; border-radius: 1000px;
+      background: var(--ads-background);
+    }
+
+    /* Inner scroll area */
+    .phone-inner {
+      display: flex; flex-direction: column; gap: 10px;
+      flex: 1; min-height: 0; overflow: hidden;
+    }
+
+    .phone-header {
+      border-radius: 12px; background: var(--ads-surface-container-high);
+      padding: 12px 16px; flex-shrink: 0;
+    }
+    .phone-scene {
+      border-radius: 12px; overflow: hidden; flex: 1; min-height: 0;
+      position: relative;
+    }
+    .scene-sky {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, #1E1812, #2C241B, #3B3024);
+    }
+    .scene-star-1 { position: absolute; top: 12px; left: 24px; width: 4px; height: 4px; border-radius: 50%; background: #DDB586; opacity: 0.4; }
+    .scene-star-2 { position: absolute; top: 20px; left: 64px; width: 2px; height: 2px; border-radius: 50%; background: #DDB586; opacity: 0.3; }
+    .scene-star-3 { position: absolute; top: 8px; right: 80px; width: 2px; height: 2px; border-radius: 50%; background: #DDB586; opacity: 0.25; }
+    .scene-moon-outer {
+      position: absolute; top: 16px; right: 32px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #DDB586; box-shadow: 0 0 16px rgba(221,181,134,0.4);
+    }
+    .scene-moon-mask {
+      position: absolute; top: 19px; right: 35px;
+      width: 24px; height: 24px; border-radius: 50%; background: #2C241B;
+    }
+    .scene-mountains { position: absolute; bottom: 0; left: 0; right: 0; }
+
+    /* Waveform canvas */
+    .phone-waveform {
+      flex-shrink: 0; padding: 0 4px;
+    }
+    .waveform-canvas { width: 100%; height: 32px; display: block; }
+    .waveform-time {
+      display: flex; justify-content: space-between; margin-top: 4px;
+    }
+
+    .phone-controls {
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px; flex-shrink: 0;
+    }
+    .play-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--ads-primary);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .phone-ai-prompt {
+      border-radius: 12px; padding: 10px 12px; flex-shrink: 0;
+      background: rgba(186,153,114,0.10); border: 1px solid rgba(186,153,114,0.20);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ai-avatar {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      background: var(--ads-primary); color: var(--ads-on-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 600;
+    }
+    .phone-home-bar {
+      display: flex; justify-content: center; padding: 4px 0; flex-shrink: 0;
+    }
+    .home-bar-pill {
+      width: 96px; height: 4px; border-radius: 1000px;
+      background: rgba(133,133,133,0.30);
+    }
+
+    /* Floating cards */
+    .float-card {
+      position: absolute; border-radius: 12px;
+      background: var(--ads-surface-container);
+      border: 1px solid rgba(89,89,89,0.30);
+      padding: 12px 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.30);
+    }
+    .float-lang  { right: -32px; top: 24px;   animation: float 4s ease-in-out infinite; }
+    .float-stats { left: -48px;  bottom: 96px; animation: float 3s ease-in-out 0.5s infinite; }
+
+    /* Stats bar */
+    .stats-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(25,25,25,0.80); backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(89,89,89,0.20);
+    }
+    .stats-bar-inner {
+      max-width: 1280px; margin: 0 auto; padding: 20px 24px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; text-align: center;
+    }
+    @media (min-width: 768px) { .stats-bar-inner { grid-template-columns: repeat(4, 1fr); } }
+
+    /* =========================================
+       PAIN POINTS / CLIENTS
+    ========================================= */
+    #clients { padding: 128px 0; background: var(--ads-surface); }
+    .section-header { text-align: center; margin-bottom: 80px; }
+    .clients-grid {
+      display: grid; grid-template-columns: 1fr; gap: 24px;
+    }
+    @media (min-width: 768px)  { .clients-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .clients-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .client-card {
+      padding: 32px; border-radius: 12px;
+      background: var(--ads-surface-container);
+      border: 1px solid rgba(89,89,89,0.30);
+      transition: all 0.3s ease; height: 100%;
+    }
+    .client-card:hover {
+      border-color: rgba(186,153,114,0.40);
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(186,153,114,0.05);
+    }
+    .client-emoji { font-size: 36px; margin-bottom: 20px; }
+
+    /* =========================================
+       FEATURES
+    ========================================= */
+    #features { padding: 128px 0; background: var(--ads-background); }
+    .features-list { display: flex; flex-direction: column; gap: 96px; }
+    .feature-row {
+      display: flex; flex-direction: column; align-items: center; gap: 64px;
+    }
+    @media (min-width: 768px) {
+      .feature-row          { flex-direction: row; }
+      .feature-row.reverse  { flex-direction: row-reverse; }
+    }
+    .feature-mockup { flex: 1; width: 100%; }
+    .feature-content { flex: 1; }
+    .feature-badge {
+      display: inline-flex; padding: 4px 12px; border-radius: var(--corner-full);
+      background: rgba(186,153,114,0.10); border: 1px solid rgba(186,153,114,0.20);
+      margin-bottom: 20px;
+    }
+    .feature-highlights { display: flex; flex-direction: column; gap: 16px; }
+    .highlight-item { display: flex; align-items: flex-start; gap: 12px; }
+
+    /* Mockup cards */
+    .mockup-card {
+      border-radius: 16px; background: var(--ads-surface-container);
+      border: 1px solid rgba(89,89,89,0.20); padding: 24px;
+    }
+    .lang-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .lang-row:last-child { margin-bottom: 0; }
+    .lang-bar-track {
+      flex: 1; height: 10px; border-radius: var(--corner-full);
+      background: var(--ads-surface-container-high); overflow: hidden;
+    }
+    .lang-bar-fill { height: 100%; border-radius: var(--corner-full); }
+    .bar-chart {
+      display: flex; align-items: flex-end; gap: 12px; height: 144px; margin-bottom: 16px;
+    }
+    .bar-day { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .bar-fill { width: 100%; border-radius: 4px 4px 0 0; }
+    .stats-row-3 {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      padding-top: 16px; border-top: 1px solid rgba(89,89,89,0.20); text-align: center;
+    }
+    .cms-layout { display: flex; gap: 16px; }
+    .cms-sidebar { width: 80px; padding-top: 4px; }
+    .cms-sidebar-line { border-radius: 4px; margin-bottom: 12px; }
+    .cms-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; flex: 1; }
+    .cms-card {
+      border-radius: 8px; background: var(--ads-surface-container-high);
+      border: 1px solid rgba(89,89,89,0.20); padding: 12px; overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .cms-img-ph {
+      height: 50%; border-radius: 4px;
+      background: rgba(186,153,114,0.10); margin-bottom: 8px;
+    }
+    .cms-line { height: 8px; border-radius: 4px; background: rgba(89,89,89,0.30); margin-bottom: 6px; }
+
+    /* =========================================
+       AI CHATBOT
+    ========================================= */
+    #ai-service { padding: 128px 0; background: var(--ads-surface); }
+    .ai-layout {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 64px;
+    }
+    @media (min-width: 1024px) { .ai-layout { flex-direction: row; } }
+
+    .chat-widget {
+      flex: 1; max-width: 480px; width: 100%; margin: 0 auto;
+      border-radius: 16px; background: var(--ads-surface-container);
+      border: 1px solid rgba(89,89,89,0.30); overflow: hidden;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.40);
+    }
+    .chat-header {
+      padding: 16px 20px; background: var(--ads-surface-container-high);
+      border-bottom: 1px solid rgba(89,89,89,0.20);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .chat-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--ads-primary); color: var(--ads-on-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 500;
+    }
+    .chat-online { display: flex; align-items: center; gap: 4px; }
+    .online-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--ads-success); animation: pulse 2s ease-in-out infinite;
+    }
+    .chat-messages {
+      padding: 20px; min-height: 360px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .msg-user { display: flex; justify-content: flex-end; }
+    .msg-ai   { display: flex; justify-content: flex-start; }
+    .bubble-user {
+      max-width: 80%; padding: 12px 16px;
+      border-radius: 16px 16px 4px 16px;
+      background: var(--ads-primary); color: var(--ads-on-primary);
+    }
+    .bubble-ai {
+      max-width: 85%; padding: 12px 16px;
+      border-radius: 16px 16px 16px 4px;
+      background: var(--ads-surface-container-high); color: var(--ads-on-surface);
+    }
+    .bubble-ai .hl { color: var(--ads-primary); font-weight: 500; }
+    .chat-input-row {
+      padding: 12px 16px; border-top: 1px solid rgba(89,89,89,0.20);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .chat-input-field {
+      flex: 1; padding: 10px 16px; border-radius: var(--corner-full);
+      background: var(--ads-surface-container-high);
+      color: var(--ads-on-surface-hint);
+    }
+    .chat-send-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--ads-primary); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .ai-features { flex: 1; }
+    .ai-cards {
+      display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 40px;
+    }
+    @media (min-width: 640px) { .ai-cards { grid-template-columns: repeat(2, 1fr); } }
+    .ai-feature-card {
+      padding: 24px; border-radius: 12px;
+      background: var(--ads-background); border: 1px solid rgba(89,89,89,0.20);
+      transition: all 0.3s ease;
+    }
+    .ai-feature-card:hover { border-color: rgba(186,153,114,0.30); transform: translateY(-4px); }
+    .ai-card-emoji { font-size: 24px; margin-bottom: 16px; }
+
+    /* =========================================
+       CASE STUDIES
+    ========================================= */
+    #cases { padding: 128px 0; background: var(--ads-background); }
+    .tabs-container {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 48px;
+    }
+    .tab-btn {
+      padding: 10px 20px; border-radius: var(--corner-full); border: none; cursor: pointer;
+      background: var(--ads-surface-container); color: var(--ads-on-surface-variant);
+      font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: 0.1px;
+      transition: all 0.3s ease;
+    }
+    .tab-btn:hover { background: var(--ads-surface-container-high); }
+    .tab-btn.active {
+      background: var(--ads-primary); color: var(--ads-on-primary);
+      box-shadow: 0 8px 24px rgba(186,153,114,0.20);
+    }
+    .cases-grid {
+      display: grid; grid-template-columns: 1fr; gap: 24px;
+    }
+    @media (min-width: 768px)  { .cases-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .cases-grid { grid-template-columns: repeat(3, 1fr); } }
+    .case-card {
+      border-radius: 16px; overflow: hidden;
+      background: var(--ads-surface); border: 1px solid rgba(89,89,89,0.20);
+      transition: all 0.5s ease;
+    }
+    .case-card:hover {
+      border-color: rgba(186,153,114,0.30);
+      transform: translateY(-8px);
+      box-shadow: 0 16px 48px rgba(186,153,114,0.05);
+    }
+    .case-illustration { position: relative; height: 176px; overflow: hidden; }
+    .case-type-badge {
+      position: absolute; top: 16px; left: 16px;
+      padding: 4px 12px; border-radius: var(--corner-full);
+      background: rgba(25,25,25,0.80); backdrop-filter: blur(4px);
+    }
+    .case-body { padding: 24px; }
+    .case-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      padding-top: 16px; border-top: 1px solid rgba(89,89,89,0.20);
+      margin-top: 20px; text-align: center;
+    }
+
+    /* =========================================
+       PROCESS TIMELINE
+    ========================================= */
+    #process { padding: 128px 0; background: var(--ads-surface); }
+    .timeline-grid {
+      display: grid; grid-template-columns: 1fr; gap: 32px; position: relative;
+    }
+    @media (min-width: 768px) { .timeline-grid { grid-template-columns: repeat(4, 1fr); } }
+    .timeline-line {
+      display: none;
+      position: absolute; top: 28px; left: 12.5%; right: 12.5%;
+      height: 2px;
+      background: linear-gradient(to right, rgba(186,153,114,0.2), rgba(186,153,114,0.4), rgba(186,153,114,0.2));
+    }
+    @media (min-width: 768px) { .timeline-line { display: block; } }
+    .timeline-step { text-align: center; position: relative; }
+    .timeline-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--ads-surface-container);
+      border: 2px solid rgba(186,153,114,0.40);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; position: relative; z-index: 1;
+      transition: all 0.3s ease;
+    }
+    .timeline-step:hover .timeline-num {
+      background: rgba(186,153,114,0.10); border-color: var(--ads-primary);
+    }
+
+    /* =========================================
+       TESTIMONIALS
+    ========================================= */
+    #testimonials { padding: 128px 0; background: var(--ads-background); }
+    .testimonials-grid {
+      display: grid; grid-template-columns: 1fr; gap: 32px;
+      max-width: 960px; margin: 0 auto;
+    }
+    @media (min-width: 768px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+    .testimonial-card {
+      padding: 32px; border-radius: 16px;
+      background: var(--ads-surface); border: 1px solid rgba(89,89,89,0.20);
+      transition: all 0.3s ease; display: flex; flex-direction: column; height: 100%;
+    }
+    .testimonial-card:hover { border-color: rgba(186,153,114,0.20); }
+    .stars { color: var(--ads-primary); font-size: 18px; letter-spacing: 4px; margin-bottom: 20px; }
+    .testimonial-quote { color: var(--ads-on-surface-variant); flex: 1; margin-bottom: 32px; }
+    .testimonial-author {
+      display: flex; align-items: center; gap: 12px;
+      padding-top: 20px; border-top: 1px solid rgba(89,89,89,0.20);
+    }
+    .author-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--ads-primary-container); color: var(--ads-on-primary-container);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 500;
+    }
+
+    /* =========================================
+       CTA
+    ========================================= */
+    #contact { padding: 128px 0; background: var(--ads-surface); position: relative; overflow: hidden; }
+    .cta-blob {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      background: rgba(186,153,114,0.05); border-radius: 50%; filter: blur(150px);
+    }
+    .cta-inner {
+      position: relative; z-index: 10;
+      max-width: 768px; margin: 0 auto; text-align: center;
+    }
+    .cta-btns { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
+    footer { padding: 48px 0; background: var(--ads-surface); border-top: 1px solid rgba(89,89,89,0.20); }
+    .footer-grid {
+      display: grid; grid-template-columns: 1fr; gap: 32px; margin-bottom: 40px;
+    }
+    @media (min-width: 768px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+    .footer-brand-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .footer-link {
+      display: block; font-size: 14px; color: var(--ads-on-surface-hint);
+      margin-bottom: 8px; transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--ads-primary); }
+    .footer-bottom {
+      padding-top: 32px; border-top: 1px solid rgba(89,89,89,0.20);
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 16px;
+    }
+    .footer-legal { display: flex; align-items: center; gap: 24px; }
+    .footer-legal-link {
+      font-size: 12px; color: var(--ads-on-surface-hint); transition: color 0.2s;
+    }
+    .footer-legal-link:hover { color: var(--ads-primary); }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="navbar-logo">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#0F0C09"/>
+          <circle cx="12" cy="9" r="2.5" fill="#BA9972"/>
+        </svg>
+      </div>
+      <span class="ads-title-large" style="color:var(--ads-on-surface)">GoTour</span>
+    </a>
+    <div class="navbar-links">
+      <a href="#clients">適用場域</a>
+      <a href="#features">功能特色</a>
+      <a href="#ai-service">AI 客服</a>
+      <a href="#cases">成功案例</a>
+      <a href="#process">導入流程</a>
+      <a href="#contact" class="navbar-cta">預約展示</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-blob-1"></div>
+  <div class="hero-blob-2"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <!-- Left: Text -->
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span class="ads-label-medium c-primary-fixed">AI-Powered Audio Guide</span>
+      </div>
+      <h1 class="ads-display-medium hero-h1">
+        讓每位訪客<br/>都擁有專屬<em>導覽員</em>
+      </h1>
+      <p class="ads-body-large hero-desc">
+        GoTour 結合 AI 智慧語音導覽與即時客服系統，為博物館、美術館、觀光景區及政府場館打造次世代導覽體驗。不需硬體投資，最快一個月內上線。
+      </p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary ads-label-large">免費預約展示 →</a>
+        <a href="#cases" class="btn-outline ads-label-large">查看成功案例</a>
+      </div>
+      <div class="trust-badges">
+        <span class="ads-label-medium c-on-surface-hint">受信賴於：</span>
+        <span class="trust-badge ads-label-medium c-on-surface-v">國立故宮博物院</span>
+        <span class="trust-badge ads-label-medium c-on-surface-v">交通部觀光署</span>
+        <span class="trust-badge ads-label-medium c-on-surface-v">日月潭風管處</span>
+      </div>
+    </div>
+
+    <!-- Right: Phone Mockup — 9:19 ratio -->
+    <div class="hero-phone">
+      <div class="phone-wrapper">
+        <div class="phone-frame">
+          <!-- Dynamic Island -->
+          <div class="phone-di">
+            <div class="phone-di-pill"></div>
+          </div>
+
+          <!-- Inner content -->
+          <div class="phone-inner">
+            <!-- App header -->
+            <div class="phone-header">
+              <div class="ads-label-small c-on-surface-hint" style="margin-bottom:2px">日月潭國家風景區</div>
+              <div class="ads-title-small" style="color:var(--ads-on-surface)">水社碼頭的故事</div>
+            </div>
+
+            <!-- CSS gradient landscape scene -->
+            <div class="phone-scene">
+              <div class="scene-sky"></div>
+              <div class="scene-star-1"></div>
+              <div class="scene-star-2"></div>
+              <div class="scene-star-3"></div>
+              <div class="scene-moon-outer"></div>
+              <div class="scene-moon-mask"></div>
+              <div class="scene-mountains">
+                <svg viewBox="0 0 260 80" style="width:100%;display:block" preserveAspectRatio="none">
+                  <polygon points="0,80 40,25 90,55 140,15 200,45 260,80" fill="#504131" opacity="0.6"/>
+                  <polygon points="0,80 60,40 120,60 180,30 230,55 260,80" fill="#3B3024" opacity="0.8"/>
+                  <polygon points="0,80 30,55 80,70 130,50 180,65 220,55 260,80" fill="#2C241B"/>
+                  <rect x="0" y="68" width="260" height="12" fill="#1E1812" opacity="0.6"/>
+                  <line x1="30" y1="72" x2="70" y2="72" stroke="#BA9972" stroke-width="0.5" opacity="0.15"/>
+                  <line x1="120" y1="74" x2="170" y2="74" stroke="#BA9972" stroke-width="0.5" opacity="0.10"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Animated waveform (Canvas) -->
+            <div class="phone-waveform">
+              <canvas id="waveformCanvas" class="waveform-canvas" width="300" height="32"></canvas>
+              <div class="waveform-time">
+                <span class="ads-label-small c-on-surface-hint">1:24</span>
+                <span class="ads-label-small c-on-surface-hint">4:38</span>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="phone-controls">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#858585" stroke-width="2"><polygon points="19,20 9,12 19,4"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+              <div class="play-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#0F0C09"><polygon points="6,4 20,12 6,20"/></svg>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#858585" stroke-width="2"><polygon points="5,4 15,12 5,20"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+            </div>
+
+            <!-- AI prompt bar -->
+            <div class="phone-ai-prompt">
+              <div class="ai-avatar">AI</div>
+              <span class="ads-label-small c-on-surface-v">有任何問題嗎？點此詢問 AI 導覽員</span>
+            </div>
+
+            <!-- Home indicator -->
+            <div class="phone-home-bar">
+              <div class="home-bar-pill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating: Language card (top-right) -->
+        <div class="float-card float-lang">
+          <div class="ads-label-small c-on-surface-hint" style="margin-bottom:8px">支援語言</div>
+          <div style="font-size:16px;display:flex;gap:4px">🇹🇼 🇺🇸 🇯🇵 🇰🇷 🇫🇷 🇹🇭</div>
+        </div>
+
+        <!-- Floating: Stats card (bottom-left) -->
+        <div class="float-card float-stats">
+          <div class="ads-label-small c-on-surface-hint" style="margin-bottom:4px">本月導覽次數</div>
+          <div class="ads-headline-medium" style="color:var(--ads-primary);margin-bottom:2px">12,847</div>
+          <div class="ads-label-small c-success">↑ 34% vs 上月</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div>
+        <div class="ads-headline-medium c-primary" data-counter="50" data-suffix="+">0+</div>
+        <div class="ads-label-small c-on-surface-hint">合作場域</div>
+      </div>
+      <div>
+        <div class="ads-headline-medium c-primary" data-counter="200" data-suffix="萬+">0萬+</div>
+        <div class="ads-label-small c-on-surface-hint">累計導覽人次</div>
+      </div>
+      <div>
+        <div class="ads-headline-medium c-primary" data-counter="15" data-suffix="+">0+</div>
+        <div class="ads-label-small c-on-surface-hint">支援語言數</div>
+      </div>
+      <div>
+        <div class="ads-headline-medium c-primary" data-counter="98" data-suffix="%">0%</div>
+        <div class="ads-label-small c-on-surface-hint">客戶滿意度</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAIN POINTS / CLIENTS ===== -->
+<section id="clients">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="badge-pill"><span class="ads-label-medium c-primary">適用場域</span></div>
+      <h2 class="ads-display-small" style="color:var(--ads-on-surface);margin-bottom:20px">
+        不只是博物館，<em style="color:var(--ads-primary);font-style:normal">每一個值得被述說的場域</em><br/>都是我們的舞台
+      </h2>
+      <p class="ads-body-large c-on-surface-v" style="max-width:672px;margin:0 auto">
+        無論是千年古蹟、現代美術館、國家風景區還是城市觀光路線，GoTour 都能為您量身打造最合適的導覽方案。
+      </p>
+    </div>
+    <div class="clients-grid">
+      <div class="client-card reveal" style="transition-delay:0s">
+        <div class="client-emoji">🏛️</div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">博物館 · 美術館</h3>
+        <p class="ads-body-medium c-on-surface-hint">藏品解說、特展語音導覽、兒童互動導覽、無障礙語音服務。取代傳統導覽機，降低維護成本，提升觀眾體驗。</p>
+      </div>
+      <div class="client-card reveal" style="transition-delay:0.1s">
+        <div class="client-emoji">🏔️</div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">觀光景區 · 風景區</h3>
+        <p class="ads-body-medium c-on-surface-hint">戶外景點定位導覽、步道生態解說、GPS 路線引導。配合 Bluetooth Beacon 定位，走到哪聽到哪。</p>
+      </div>
+      <div class="client-card reveal" style="transition-delay:0.2s">
+        <div class="client-emoji">🏛</div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">政府觀光單位</h3>
+        <p class="ads-body-medium c-on-surface-hint">觀光局、文化局、縣市政府觀光處。多語系城市導覽、文化資產解說、節慶活動導覽，提升國際旅客滿意度。</p>
+      </div>
+      <div class="client-card reveal" style="transition-delay:0.3s">
+        <div class="client-emoji">🎭</div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">文化園區 · 古蹟</h3>
+        <p class="ads-body-medium c-on-surface-hint">歷史建築導覽、文創園區漫步指引、古蹟修復故事。讓沉默的建築重新開口說話，賦予文化資產新生命。</p>
+      </div>
+      <div class="client-card reveal" style="transition-delay:0.4s">
+        <div class="client-emoji">🌿</div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">生態園區 · 主題樂園</h3>
+        <p class="ads-body-medium c-on-surface-hint">動植物解說、園區互動遊戲導覽、親子探險路線。結合 AI 問答讓遊客邊玩邊學，大幅提升回訪率。</p>
+      </div>
+      <div class="client-card reveal" style="transition-delay:0.5s">
+        <div class="client-emoji">✈️</div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">旅行社 · DMO</h3>
+        <p class="ads-body-medium c-on-surface-hint">自由行語音導遊、團體行程補充導覽、城市散步路線。為旅客提供 24 小時不打烊的 AI 導遊服務。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="badge-pill"><span class="ads-label-medium c-primary">核心功能</span></div>
+      <h2 class="ads-display-small" style="color:var(--ads-on-surface);margin-bottom:20px">
+        您想做的，<em style="color:var(--ads-primary);font-style:normal">我們都做得到</em>
+      </h2>
+      <p class="ads-body-large c-on-surface-v" style="max-width:672px;margin:0 auto">
+        從內容製作到系統上線，從多語系支援到數據分析，GoTour 提供一站式解決方案。
+      </p>
+    </div>
+
+    <div class="features-list">
+      <!-- Feature 1: 多語系 -->
+      <div class="feature-row reveal">
+        <div class="feature-mockup">
+          <div class="mockup-card">
+            <div class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:20px">多語系管理中心</div>
+            <div class="lang-row">
+              <span style="font-size:20px;flex-shrink:0">🇹🇼</span>
+              <span class="ads-body-medium c-on-surface-v" style="width:96px">繁體中文</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:100%;background:#82D28A"></div></div>
+              <span class="ads-label-small c-on-surface-hint" style="width:52px;text-align:right">已上線</span>
+              <span class="ads-label-large c-on-surface-v" style="width:40px;text-align:right">100%</span>
+            </div>
+            <div class="lang-row">
+              <span style="font-size:20px;flex-shrink:0">🇺🇸</span>
+              <span class="ads-body-medium c-on-surface-v" style="width:96px">English</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:100%;background:#82D28A"></div></div>
+              <span class="ads-label-small c-on-surface-hint" style="width:52px;text-align:right">已上線</span>
+              <span class="ads-label-large c-on-surface-v" style="width:40px;text-align:right">100%</span>
+            </div>
+            <div class="lang-row">
+              <span style="font-size:20px;flex-shrink:0">🇯🇵</span>
+              <span class="ads-body-medium c-on-surface-v" style="width:96px">日本語</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:87%;background:#EFCE5A"></div></div>
+              <span class="ads-label-small c-on-surface-hint" style="width:52px;text-align:right">翻譯中</span>
+              <span class="ads-label-large c-on-surface-v" style="width:40px;text-align:right">87%</span>
+            </div>
+            <div class="lang-row">
+              <span style="font-size:20px;flex-shrink:0">🇰🇷</span>
+              <span class="ads-body-medium c-on-surface-v" style="width:96px">한국어</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:62%;background:#EFCE5A"></div></div>
+              <span class="ads-label-small c-on-surface-hint" style="width:52px;text-align:right">翻譯中</span>
+              <span class="ads-label-large c-on-surface-v" style="width:40px;text-align:right">62%</span>
+            </div>
+          </div>
+        </div>
+        <div class="feature-content">
+          <div class="feature-badge"><span class="ads-label-medium c-primary">多語系</span></div>
+          <h3 class="ads-headline-large" style="color:var(--ads-on-surface);margin-bottom:20px">12 種語言，一鍵切換</h3>
+          <p class="ads-body-large c-on-surface-v" style="margin-bottom:32px">AI 翻譯加上母語者校對，確保每種語言的導覽都自然流暢。後台即時管理翻譯進度，有效服務國際旅客。</p>
+          <ul class="feature-highlights">
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">中、英、日、韓、法、德、西、泰語等</span>
+            </li>
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">AI 翻譯 + 人工校對雙重品質保證</span>
+            </li>
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">旅客自動語系偵測，免手動切換</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Feature 2: 數據洞察 -->
+      <div class="feature-row reverse reveal">
+        <div class="feature-mockup">
+          <div class="mockup-card">
+            <div class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:4px">數據儀表板</div>
+            <div class="ads-label-small c-on-surface-hint" style="margin-bottom:24px">本週即時數據</div>
+            <div class="bar-chart">
+              <div class="bar-day"><div class="bar-fill" style="height:45%;background:#BA9972"></div><span class="ads-label-small c-on-surface-hint">一</span></div>
+              <div class="bar-day"><div class="bar-fill" style="height:62%;background:#BA9972"></div><span class="ads-label-small c-on-surface-hint">二</span></div>
+              <div class="bar-day"><div class="bar-fill" style="height:75%;background:#BA9972"></div><span class="ads-label-small c-on-surface-hint">三</span></div>
+              <div class="bar-day"><div class="bar-fill" style="height:55%;background:#BA9972"></div><span class="ads-label-small c-on-surface-hint">四</span></div>
+              <div class="bar-day"><div class="bar-fill" style="height:88%;background:#BA9972"></div><span class="ads-label-small c-on-surface-hint">五</span></div>
+              <div class="bar-day"><div class="bar-fill" style="height:70%;background:rgba(186,153,114,0.4)"></div><span class="ads-label-small c-on-surface-hint">六</span></div>
+              <div class="bar-day"><div class="bar-fill" style="height:82%;background:rgba(186,153,114,0.4)"></div><span class="ads-label-small c-on-surface-hint">日</span></div>
+            </div>
+            <div class="stats-row-3">
+              <div><div class="ads-label-small c-on-surface-hint" style="margin-bottom:4px">使用人次</div><div class="ads-title-medium" style="color:var(--ads-on-surface)">4,231</div></div>
+              <div><div class="ads-label-small c-on-surface-hint" style="margin-bottom:4px">平均時長</div><div class="ads-title-medium" style="color:var(--ads-on-surface)">18 min</div></div>
+              <div><div class="ads-label-small c-on-surface-hint" style="margin-bottom:4px">滿意度</div><div class="ads-title-medium" style="color:var(--ads-on-surface)">96.3%</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="feature-content">
+          <div class="feature-badge"><span class="ads-label-medium c-primary">數據洞察</span></div>
+          <h3 class="ads-headline-large" style="color:var(--ads-on-surface);margin-bottom:20px">即時數據，掌握每位訪客動態</h3>
+          <p class="ads-body-large c-on-surface-v" style="margin-bottom:32px">從使用人數、熱門展品到停留時間，全面數據視覺化呈現。讓管理者用數據驅動決策。</p>
+          <ul class="feature-highlights">
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">即時使用人次、尖峰時段分析</span>
+            </li>
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">熱門展品 / 景點排行榜</span>
+            </li>
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">月報自動產出，支援 Excel 匯出</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Feature 3: CMS -->
+      <div class="feature-row reveal">
+        <div class="feature-mockup">
+          <div class="mockup-card">
+            <div class="cms-layout">
+              <div class="cms-sidebar">
+                <div class="cms-sidebar-line" style="height:12px;background:rgba(186,153,114,0.40);width:64px"></div>
+                <div class="cms-sidebar-line" style="height:10px;background:rgba(89,89,89,0.30);width:48px"></div>
+                <div class="cms-sidebar-line" style="height:10px;background:rgba(89,89,89,0.30);width:64px"></div>
+                <div class="cms-sidebar-line" style="height:10px;background:rgba(89,89,89,0.30);width:40px"></div>
+              </div>
+              <div style="flex:1">
+                <div class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:16px">內容管理系統</div>
+                <div class="cms-grid">
+                  <div class="cms-card"><div class="cms-img-ph"></div><div class="cms-line" style="width:75%"></div><div class="cms-line" style="width:50%"></div></div>
+                  <div class="cms-card"><div class="cms-img-ph"></div><div class="cms-line" style="width:75%"></div><div class="cms-line" style="width:50%"></div></div>
+                  <div class="cms-card"><div class="cms-img-ph"></div><div class="cms-line" style="width:75%"></div><div class="cms-line" style="width:50%"></div></div>
+                  <div class="cms-card"><div class="cms-img-ph"></div><div class="cms-line" style="width:75%"></div><div class="cms-line" style="width:50%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="feature-content">
+          <div class="feature-badge"><span class="ads-label-medium c-primary">內容管理</span></div>
+          <h3 class="ads-headline-large" style="color:var(--ads-on-surface);margin-bottom:20px">直覺化後台，自主管理所有內容</h3>
+          <p class="ads-body-large c-on-surface-v" style="margin-bottom:32px">場館人員無需技術背景即可輕鬆新增、編輯導覽內容。支援文字、圖片、音檔上傳，即時預覽效果。</p>
+          <ul class="feature-highlights">
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">拖拉式編輯器，所見即所得</span>
+            </li>
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">支援 TTS 自動語音合成</span>
+            </li>
+            <li class="highlight-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:var(--ads-success);flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="ads-body-medium c-on-surface-v">版本控制，修改紀錄完整保留</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AI CHATBOT ===== -->
+<section id="ai-service">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="badge-pill"><span class="ads-label-medium c-primary">AI 客服</span></div>
+      <h2 class="ads-display-small" style="color:var(--ads-on-surface);margin-bottom:20px">
+        24/7 全天候<em style="color:var(--ads-primary);font-style:normal"> AI 導覽員</em>，<br/>隨時回答訪客的每一個好奇
+      </h2>
+      <p class="ads-body-large c-on-surface-v" style="max-width:672px;margin:0 auto">
+        整合最先進的大型語言模型，讓您的場域擁有一位永遠不會疲倦、精通所有展品知識的智慧客服。
+      </p>
+    </div>
+
+    <div class="ai-layout">
+      <!-- Chat mockup -->
+      <div class="reveal" style="flex:1;max-width:480px;width:100%;margin:0 auto">
+        <div class="chat-widget">
+          <div class="chat-header">
+            <div class="chat-avatar ads-label-large">AI</div>
+            <div>
+              <div class="ads-title-small" style="color:var(--ads-on-surface)">GoTour AI 導覽員</div>
+              <div class="chat-online ads-label-small c-success">
+                <span class="online-dot"></span>&nbsp;線上中
+              </div>
+            </div>
+          </div>
+          <div class="chat-messages">
+            <div class="msg-user">
+              <div class="bubble-user ads-body-medium">這幅畫用了什麼技法？看起來好特別</div>
+            </div>
+            <div class="msg-ai" style="animation:fadeSlideUp 0.5s ease 0.3s both">
+              <div class="bubble-ai ads-body-medium">這幅作品使用了「<span class="hl">點描法</span>」（Pointillism），由藝術家運用數千個細小色點構成畫面。走近時您會看到獨立色點，退後幾步則會融合成完整光影。建議您從不同距離欣賞！</div>
+            </div>
+            <div class="msg-user" style="animation:fadeSlideUp 0.5s ease 0.6s both">
+              <div class="bubble-user ads-body-medium">附近有推薦的餐廳嗎？</div>
+            </div>
+            <div class="msg-ai" style="animation:fadeSlideUp 0.5s ease 0.9s both">
+              <div class="bubble-ai ads-body-medium">美術館 B1 有「<span class="hl">光影咖啡廳</span>」提供輕食。若想用正餐，步行 3 分鐘有「山居小館」，評價很高的台菜料理。需要我幫您導航嗎？</div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <div class="chat-input-field ads-body-medium">輸入您的問題...</div>
+            <button class="chat-send-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0C09" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature list -->
+      <div class="ai-features reveal" style="flex:1">
+        <h3 class="ads-headline-large" style="color:var(--ads-on-surface);margin-bottom:16px">不只回答問題，更創造體驗</h3>
+        <p class="ads-body-large c-on-surface-v">AI 客服深度整合場域知識庫，精準回覆每一個提問。</p>
+        <div class="ai-cards">
+          <div class="ai-feature-card">
+            <div class="ai-card-emoji">🧠</div>
+            <h4 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:8px">RAG 知識庫引擎</h4>
+            <p class="ads-body-small c-on-surface-hint">整合展品資料、場館資訊、周邊推薦，回答精準有據</p>
+          </div>
+          <div class="ai-feature-card">
+            <div class="ai-card-emoji">🌐</div>
+            <h4 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:8px">多語即時問答</h4>
+            <p class="ads-body-small c-on-surface-hint">支援 12 種語言即時對話，外國旅客也能暢通無阻</p>
+          </div>
+          <div class="ai-feature-card">
+            <div class="ai-card-emoji">📊</div>
+            <h4 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:8px">問題分析報告</h4>
+            <p class="ads-body-small c-on-surface-hint">自動歸納訪客最常問的問題，幫助優化展覽與服務</p>
+          </div>
+          <div class="ai-feature-card">
+            <div class="ai-card-emoji">🔗</div>
+            <h4 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:8px">服務串接</h4>
+            <p class="ads-body-small c-on-surface-hint">可連結票務系統、餐廳預約、紀念品商店等延伸服務</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CASE STUDIES ===== -->
+<section id="cases">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="badge-pill"><span class="ads-label-medium c-primary">成功案例</span></div>
+      <h2 class="ads-display-small" style="color:var(--ads-on-surface);margin-bottom:20px">
+        從博物館到國家風景區，<em style="color:var(--ads-primary);font-style:normal">每一個場域</em>都有專屬解法
+      </h2>
+      <p class="ads-body-large c-on-surface-v" style="max-width:672px;margin:0 auto">
+        看看不同類型的場域如何運用 GoTour 提升訪客體驗與營運效率。
+      </p>
+    </div>
+
+    <!-- Filterable Tabs -->
+    <div class="tabs-container reveal">
+      <button class="tab-btn active" data-tab="全部">全部</button>
+      <button class="tab-btn" data-tab="博物館 / 美術館">博物館 / 美術館</button>
+      <button class="tab-btn" data-tab="觀光景區">觀光景區</button>
+      <button class="tab-btn" data-tab="政府單位">政府單位</button>
+      <button class="tab-btn" data-tab="文化園區">文化園區</button>
+    </div>
+
+    <!-- Case Cards -->
+    <div class="cases-grid" id="cases-grid">
+
+      <!-- Case 1 -->
+      <div class="case-card" data-type="博物館">
+        <div class="case-illustration">
+          <svg viewBox="0 0 400 200" style="width:100%;height:100%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="200" fill="#1E1812"/>
+            <polygon points="100,120 200,50 300,120" fill="#353535"/>
+            <rect x="160" y="70" width="80" height="50" fill="#353535"/>
+            <rect x="175" y="80" width="20" height="35" rx="10" fill="#191919"/>
+            <rect x="205" y="80" width="20" height="35" rx="10" fill="#191919"/>
+            <rect x="130" y="85" width="30" height="22" rx="3" fill="#BA9972" opacity="0.5"/>
+            <rect x="240" y="85" width="30" height="22" rx="3" fill="#BA9972" opacity="0.5"/>
+            <line x1="100" y1="120" x2="300" y2="120" stroke="#504131" stroke-width="2"/>
+            <polygon points="90,120 200,40 310,120" fill="none" stroke="#7A654B" stroke-width="1" opacity="0.5"/>
+          </svg>
+          <div class="case-type-badge"><span class="ads-label-medium c-on-surface-v">博物館</span></div>
+        </div>
+        <div class="case-body">
+          <h3 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:12px">國立歷史博物館 — 常設展全面升級</h3>
+          <p class="ads-body-small c-on-surface-hint">導入 AI 語音導覽取代傳統導覽機，涵蓋 320 件館藏，支援 8 種語言，大幅降低設備維護成本。</p>
+          <div class="case-stats">
+            <div><div class="ads-title-small c-primary">+67%</div><div class="ads-label-small c-on-surface-hint">導覽使用率</div></div>
+            <div><div class="ads-title-small c-primary">8 語系</div><div class="ads-label-small c-on-surface-hint">多語導覽</div></div>
+            <div><div class="ads-title-small c-primary">-40%</div><div class="ads-label-small c-on-surface-hint">設備成本</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 2 -->
+      <div class="case-card" data-type="觀光景區">
+        <div class="case-illustration">
+          <svg viewBox="0 0 400 200" style="width:100%;height:100%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="200" fill="#0A1A0A"/>
+            <polygon points="0,180 80,80 160,180" fill="#1A3D1A"/>
+            <polygon points="100,180 220,50 340,180" fill="#0D2B0D"/>
+            <polygon points="260,180 350,100 400,180" fill="#1A3D1A"/>
+            <circle cx="320" cy="50" r="20" fill="#EFCE5A" opacity="0.6"/>
+            <ellipse cx="200" cy="175" rx="180" ry="25" fill="#0A2A3D" opacity="0.5"/>
+            <circle cx="150" cy="130" r="3" fill="#82D28A" opacity="0.8"/>
+            <circle cx="220" cy="110" r="3" fill="#82D28A" opacity="0.8"/>
+            <circle cx="280" cy="125" r="3" fill="#82D28A" opacity="0.8"/>
+            <polyline points="150,130 220,110 280,125" stroke="#82D28A" stroke-width="1" fill="none" opacity="0.4" stroke-dasharray="4,3"/>
+          </svg>
+          <div class="case-type-badge"><span class="ads-label-medium c-on-surface-v">觀光景區</span></div>
+        </div>
+        <div class="case-body">
+          <h3 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:12px">日月潭國家風景區 — 智慧湖畔導覽</h3>
+          <p class="ads-body-small c-on-surface-hint">結合 GPS 定位的戶外語音導覽系統，覆蓋環湖步道 12 個導覽站點，搭配 AI 即時解說。</p>
+          <div class="case-stats">
+            <div><div class="ads-title-small c-primary">12 站</div><div class="ads-label-small c-on-surface-hint">導覽站點</div></div>
+            <div><div class="ads-title-small c-primary">+89%</div><div class="ads-label-small c-on-surface-hint">旅客滿意度</div></div>
+            <div><div class="ads-title-small c-primary">5 語系</div><div class="ads-label-small c-on-surface-hint">多語導覽</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 3 -->
+      <div class="case-card" data-type="政府單位">
+        <div class="case-illustration">
+          <svg viewBox="0 0 400 200" style="width:100%;height:100%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="200" fill="#1A1500"/>
+            <rect x="40" y="100" width="40" height="100" fill="#353535"/>
+            <rect x="100" y="80" width="30" height="120" fill="#424242"/>
+            <rect x="150" y="110" width="50" height="90" fill="#353535"/>
+            <rect x="220" y="70" width="35" height="130" fill="#4D4D4D"/>
+            <rect x="275" y="90" width="45" height="110" fill="#353535"/>
+            <rect x="340" y="85" width="40" height="115" fill="#424242"/>
+            <g fill="#EFCE5A" opacity="0.3">
+              <rect x="50" y="110" width="8" height="6" rx="1"/>
+              <rect x="50" y="125" width="8" height="6" rx="1"/>
+              <rect x="230" y="80" width="8" height="6" rx="1"/>
+              <rect x="230" y="95" width="8" height="6" rx="1"/>
+              <rect x="345" y="95" width="8" height="6" rx="1"/>
+            </g>
+            <circle cx="120" cy="120" r="3" fill="#EFCE5A" opacity="0.5"/>
+            <circle cx="240" cy="90" r="3" fill="#EFCE5A" opacity="0.5"/>
+            <circle cx="350" cy="100" r="3" fill="#EFCE5A" opacity="0.5"/>
+            <line x1="120" y1="120" x2="240" y2="90" stroke="#EFCE5A" stroke-width="0.8" opacity="0.3"/>
+            <line x1="240" y1="90" x2="350" y2="100" stroke="#EFCE5A" stroke-width="0.8" opacity="0.3"/>
+          </svg>
+          <div class="case-type-badge"><span class="ads-label-medium c-on-surface-v">政府單位</span></div>
+        </div>
+        <div class="case-body">
+          <h3 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:12px">臺北市觀光傳播局 — 城市漫步路線</h3>
+          <p class="ads-body-small c-on-surface-hint">為觀光局打造 5 條城市漫步語音導覽路線，涵蓋歷史街區、美食巷弄、文化地標。</p>
+          <div class="case-stats">
+            <div><div class="ads-title-small c-primary">5 條</div><div class="ads-label-small c-on-surface-hint">導覽路線</div></div>
+            <div><div class="ads-title-small c-primary">32 站</div><div class="ads-label-small c-on-surface-hint">導覽站點</div></div>
+            <div><div class="ads-title-small c-primary">6 語系</div><div class="ads-label-small c-on-surface-hint">多語導覽</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 4 -->
+      <div class="case-card" data-type="美術館">
+        <div class="case-illustration">
+          <svg viewBox="0 0 400 200" style="width:100%;height:100%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="200" fill="#1E1812"/>
+            <polygon points="100,120 200,50 300,120" fill="#353535"/>
+            <rect x="160" y="70" width="80" height="50" fill="#353535"/>
+            <rect x="175" y="80" width="20" height="35" rx="10" fill="#191919"/>
+            <rect x="205" y="80" width="20" height="35" rx="10" fill="#191919"/>
+            <rect x="130" y="85" width="30" height="22" rx="3" fill="#BA9972" opacity="0.5"/>
+            <rect x="240" y="85" width="30" height="22" rx="3" fill="#BA9972" opacity="0.5"/>
+            <line x1="100" y1="120" x2="300" y2="120" stroke="#504131" stroke-width="2"/>
+            <polygon points="90,120 200,40 310,120" fill="none" stroke="#7A654B" stroke-width="1" opacity="0.5"/>
+          </svg>
+          <div class="case-type-badge"><span class="ads-label-medium c-on-surface-v">美術館</span></div>
+        </div>
+        <div class="case-body">
+          <h3 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:12px">高雄市立美術館 — 特展互動導覽</h3>
+          <p class="ads-body-small c-on-surface-hint">國際特展搭配 AI 導覽，觀眾可即時提問藝術家創作背景，並獲得個人化參觀路線推薦。</p>
+          <div class="case-stats">
+            <div><div class="ads-title-small c-primary">+120%</div><div class="ads-label-small c-on-surface-hint">互動率提升</div></div>
+            <div><div class="ads-title-small c-primary">4.8★</div><div class="ads-label-small c-on-surface-hint">觀眾評分</div></div>
+            <div><div class="ads-title-small c-primary">3 萬+</div><div class="ads-label-small c-on-surface-hint">特展使用</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 5 -->
+      <div class="case-card" data-type="文化園區">
+        <div class="case-illustration">
+          <svg viewBox="0 0 400 200" style="width:100%;height:100%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="200" fill="#1E1812"/>
+            <rect x="120" y="80" width="160" height="100" rx="4" fill="#353535"/>
+            <path d="M120,80 Q200,40 280,80" fill="#424242"/>
+            <rect x="180" y="110" width="40" height="70" rx="20" fill="#191919"/>
+            <rect x="140" y="100" width="25" height="18" rx="3" fill="#BA9972" opacity="0.4"/>
+            <rect x="235" y="100" width="25" height="18" rx="3" fill="#BA9972" opacity="0.4"/>
+            <circle cx="200" cy="60" r="8" stroke="#DDB586" stroke-width="1" fill="none" opacity="0.4"/>
+          </svg>
+          <div class="case-type-badge"><span class="ads-label-medium c-on-surface-v">文化園區</span></div>
+        </div>
+        <div class="case-body">
+          <h3 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:12px">臺南赤崁文化園區 — 古蹟復刻之旅</h3>
+          <p class="ads-body-small c-on-surface-hint">結合語音導覽重現 400 年歷史場景。訪客掃描古蹟即可聆聽故事，搭配 AI 深度問答。</p>
+          <div class="case-stats">
+            <div><div class="ads-title-small c-primary">15 站</div><div class="ads-label-small c-on-surface-hint">導覽站點</div></div>
+            <div><div class="ads-title-small c-primary">+200%</div><div class="ads-label-small c-on-surface-hint">停留時間</div></div>
+            <div><div class="ads-title-small c-primary">4.9★</div><div class="ads-label-small c-on-surface-hint">Google 評價</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 6 -->
+      <div class="case-card" data-type="風景區">
+        <div class="case-illustration">
+          <svg viewBox="0 0 400 200" style="width:100%;height:100%" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="200" fill="#0A1A0A"/>
+            <polygon points="0,180 80,80 160,180" fill="#1A3D1A"/>
+            <polygon points="100,180 220,50 340,180" fill="#0D2B0D"/>
+            <polygon points="260,180 350,100 400,180" fill="#1A3D1A"/>
+            <circle cx="320" cy="50" r="20" fill="#EFCE5A" opacity="0.6"/>
+            <ellipse cx="200" cy="175" rx="180" ry="25" fill="#0A2A3D" opacity="0.5"/>
+            <circle cx="150" cy="130" r="3" fill="#82D28A" opacity="0.8"/>
+            <circle cx="220" cy="110" r="3" fill="#82D28A" opacity="0.8"/>
+            <circle cx="280" cy="125" r="3" fill="#82D28A" opacity="0.8"/>
+            <polyline points="150,130 220,110 280,125" stroke="#82D28A" stroke-width="1" fill="none" opacity="0.4" stroke-dasharray="4,3"/>
+          </svg>
+          <div class="case-type-badge"><span class="ads-label-medium c-on-surface-v">風景區</span></div>
+        </div>
+        <div class="case-body">
+          <h3 class="ads-title-medium" style="color:var(--ads-on-surface);margin-bottom:12px">阿里山國家風景區 — 生態步道導覽</h3>
+          <p class="ads-body-small c-on-surface-hint">為高山步道設計離線語音導覽，即使無網路也能使用。搭配生態辨識功能，拍照即可識別動植物。</p>
+          <div class="case-stats">
+            <div><div class="ads-title-small c-primary">離線可用</div><div class="ads-label-small c-on-surface-hint">無網路支援</div></div>
+            <div><div class="ads-title-small c-primary">+45%</div><div class="ads-label-small c-on-surface-hint">使用率成長</div></div>
+            <div><div class="ads-title-small c-primary">3 語系</div><div class="ads-label-small c-on-surface-hint">多語導覽</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cases-grid -->
+  </div>
+</section>
+
+<!-- ===== PROCESS TIMELINE ===== -->
+<section id="process">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="badge-pill"><span class="ads-label-medium c-primary">導入流程</span></div>
+      <h2 class="ads-display-small" style="color:var(--ads-on-surface);margin-bottom:20px">
+        從洽談到上線，<em style="color:var(--ads-primary);font-style:normal">最快 4 週</em>
+      </h2>
+      <p class="ads-body-large c-on-surface-v" style="max-width:560px;margin:0 auto">
+        我們的團隊將全程陪伴，確保每個環節都符合您的需求。
+      </p>
+    </div>
+
+    <div class="timeline-grid">
+      <div class="timeline-line"></div>
+      <div class="timeline-step reveal">
+        <div class="timeline-num"><span class="ads-title-large c-primary">1</span></div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">需求訪談</h3>
+        <p class="ads-body-medium c-on-surface-hint">深入了解場域特性、目標受眾與現有痛點，擬定最佳導覽方案。</p>
+      </div>
+      <div class="timeline-step reveal" style="transition-delay:0.15s">
+        <div class="timeline-num"><span class="ads-title-large c-primary">2</span></div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">內容製作</h3>
+        <p class="ads-body-medium c-on-surface-hint">專業團隊協助撰稿、錄音、翻譯，AI 輔助加速多語系產出。</p>
+      </div>
+      <div class="timeline-step reveal" style="transition-delay:0.3s">
+        <div class="timeline-num"><span class="ads-title-large c-primary">3</span></div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">系統部署</h3>
+        <p class="ads-body-medium c-on-surface-hint">雲端部署、Beacon 安裝、AI 知識庫建置，全由我方工程團隊負責。</p>
+      </div>
+      <div class="timeline-step reveal" style="transition-delay:0.45s">
+        <div class="timeline-num"><span class="ads-title-large c-primary">4</span></div>
+        <h3 class="ads-title-large" style="color:var(--ads-on-surface);margin-bottom:12px">正式上線</h3>
+        <p class="ads-body-medium c-on-surface-hint">教育訓練、試營運調整、持續優化。上線後提供專屬客戶成功經理。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-header reveal" style="margin-bottom:64px">
+      <div class="badge-pill"><span class="ads-label-medium c-primary">客戶好評</span></div>
+      <h2 class="ads-display-small" style="color:var(--ads-on-surface)">聽聽他們怎麼說</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <blockquote class="ads-body-large testimonial-quote">「導入 GoTour 之後，外國旅客的滿意度調查從 3.2 提升到 4.7。特別是 AI 客服功能，讓服務台人員可以專注在更重要的任務上。」</blockquote>
+        <div class="testimonial-author">
+          <div class="author-avatar ads-label-large">陳</div>
+          <div>
+            <div class="ads-title-small" style="color:var(--ads-on-surface)">陳館長</div>
+            <div class="ads-label-small c-on-surface-hint">國立歷史博物館 館長</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal" style="transition-delay:0.15s">
+        <div class="stars">★★★★★</div>
+        <blockquote class="ads-body-large testimonial-quote">「戶外景區最頭痛的就是導覽設備損壞和語言隔閡。GoTour 的 PWA 方案讓遊客用自己的手機就能使用，GPS 導覽在步道上表現超出預期。」</blockquote>
+        <div class="testimonial-author">
+          <div class="author-avatar ads-label-large">林</div>
+          <div>
+            <div class="ads-title-small" style="color:var(--ads-on-surface)">林處長</div>
+            <div class="ads-label-small c-on-surface-hint">日月潭風景區管理處</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="contact">
+  <div class="cta-blob"></div>
+  <div class="container">
+    <div class="cta-inner">
+      <div class="reveal">
+        <div class="badge-pill"><span class="ads-label-medium c-primary">開始合作</span></div>
+        <h2 class="ads-display-small" style="color:var(--ads-on-surface);margin-bottom:20px">
+          準備好讓您的場域<em style="color:var(--ads-primary);font-style:normal">說出更好的故事</em>了嗎？
+        </h2>
+        <p class="ads-body-large c-on-surface-v" style="margin-bottom:16px">
+          無論您是博物館、觀光景區還是政府單位，我們都有最適合的方案。
+        </p>
+        <p class="ads-body-large c-on-surface-v" style="margin-bottom:48px">
+          預約一場 30 分鐘的線上展示，讓我們為您示範。
+        </p>
+      </div>
+      <div class="cta-btns reveal" style="transition-delay:0.2s">
+        <a href="mailto:hello@gotour.io" class="btn-primary ads-label-large">預約免費展示 →</a>
+        <a href="#" class="btn-outline ads-label-large">下載合作提案</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-logo">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#0F0C09"/>
+              <circle cx="12" cy="9" r="2.5" fill="#BA9972"/>
+            </svg>
+          </div>
+          <span class="ads-title-large" style="color:var(--ads-on-surface)">GoTour</span>
+        </div>
+        <p style="font-size:14px;color:var(--ads-on-surface-hint);line-height:1.6">AI 驅動的智慧語音導覽服務，讓每一次參觀都成為難忘的體驗。</p>
+      </div>
+      <div>
+        <h4 style="font-size:14px;font-weight:500;color:var(--ads-on-surface);margin-bottom:16px">產品</h4>
+        <ul>
+          <li><a href="#" class="footer-link">語音導覽</a></li>
+          <li><a href="#" class="footer-link">AI 客服</a></li>
+          <li><a href="#" class="footer-link">數據分析</a></li>
+          <li><a href="#" class="footer-link">內容管理</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:14px;font-weight:500;color:var(--ads-on-surface);margin-bottom:16px">解決方案</h4>
+        <ul>
+          <li><a href="#" class="footer-link">博物館</a></li>
+          <li><a href="#" class="footer-link">美術館</a></li>
+          <li><a href="#" class="footer-link">觀光景點</a></li>
+          <li><a href="#" class="footer-link">政府單位</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:14px;font-weight:500;color:var(--ads-on-surface);margin-bottom:16px">聯繫我們</h4>
+        <ul>
+          <li style="font-size:14px;color:var(--ads-on-surface-hint);margin-bottom:8px">service@gotour.com.tw</li>
+          <li style="font-size:14px;color:var(--ads-on-surface-hint);margin-bottom:8px">02-2345-6789</li>
+          <li style="font-size:14px;color:var(--ads-on-surface-hint)">台北市信義區信義路五段 7 號</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p style="font-size:12px;color:var(--ads-on-surface-hint)">&copy; 2026 GoTour by ARTOGO. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="#" class="footer-legal-link">隱私政策</a>
+        <a href="#" class="footer-legal-link">服務條款</a>
+        <a href="#" class="footer-legal-link">使用規範</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+/* Navbar scroll */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+/* Animated waveform — Canvas + requestAnimationFrame */
+(function() {
+  const canvas = document.getElementById('waveformCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const barCount = 40;
+  const played = 0.35; // 35% played
+  let rafId;
+
+  function draw(t) {
+    const W = canvas.width;
+    const H = canvas.height;
+    const barWidth = W / barCount * 0.6;
+    const gap = W / barCount * 0.4;
+
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < barCount; i++) {
+      const x = i * (barWidth + gap) + gap / 2;
+      // Pseudo-random deterministic height per bar
+      const seed = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+      const baseH = 0.3 + (seed - Math.floor(seed)) * 0.7;
+      const isPlayed = i / barCount < played;
+      const animOffset = isPlayed ? Math.sin(t / 600 + i * 0.3) * 0.15 : 0;
+      const h = (baseH + animOffset) * H * 0.8;
+
+      ctx.fillStyle = isPlayed ? '#BA9972' : 'rgba(133,133,133,0.3)';
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(x, (H - h) / 2, barWidth, h, 2);
+      } else {
+        ctx.rect(x, (H - h) / 2, barWidth, h);
+      }
+      ctx.fill();
+    }
+    rafId = requestAnimationFrame(draw);
+  }
+  rafId = requestAnimationFrame(draw);
+})();
+
+/* Animated counter */
+function animateCounter(el) {
+  const target = parseInt(el.dataset.counter, 10);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1800;
+  const start = performance.now();
+  (function tick(now) {
+    const elapsed = now - start;
+    const p = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(eased * target) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  })(start);
+}
+
+/* IntersectionObserver — scroll reveal */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* IntersectionObserver — counters (fire once) */
+let countersStarted = false;
+const counterObs = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && !countersStarted) {
+    countersStarted = true;
+    document.querySelectorAll('[data-counter]').forEach(animateCounter);
+    counterObs.disconnect();
+  }
+}, { threshold: 0.5 });
+const statsBar = document.querySelector('.stats-bar');
+if (statsBar) counterObs.observe(statsBar);
+
+/* Case study tab filter */
+const tabBtns   = document.querySelectorAll('.tab-btn');
+const caseCards = document.querySelectorAll('.case-card');
+
+function matchTab(tab, type) {
+  if (tab === '全部') return true;
+  if (tab === '博物館 / 美術館') return type === '博物館' || type === '美術館';
+  if (tab === '觀光景區') return type === '觀光景區' || type === '風景區';
+  if (tab === '政府單位') return type === '政府單位';
+  if (tab === '文化園區') return type === '文化園區';
+  return false;
+}
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const activeTab = btn.dataset.tab;
+    let visibleIdx = 0;
+    caseCards.forEach(card => {
+      const visible = matchTab(activeTab, card.dataset.type);
+      card.style.display = visible ? '' : 'none';
+      if (visible) {
+        card.style.animation = 'none';
+        void card.offsetWidth; // reflow
+        card.style.animation = 'fadeSlideUp 0.5s ease ' + (visibleIdx * 0.08) + 's both';
+        visibleIdx++;
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
