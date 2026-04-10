@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" fill="#1E1812"/>
+  <!-- Museum building -->
+  <rect x="200" y="200" width="400" height="300" rx="4" fill="#353535"/>
+  <rect x="340" y="130" width="120" height="70" fill="#353535"/>
+  <!-- Columns -->
+  <rect x="240" y="220" width="30" height="250" rx="4" fill="#424242"/>
+  <rect x="320" y="220" width="30" height="250" rx="4" fill="#424242"/>
+  <rect x="450" y="220" width="30" height="250" rx="4" fill="#424242"/>
+  <rect x="530" y="220" width="30" height="250" rx="4" fill="#424242"/>
+  <!-- Pediment -->
+  <polygon points="180,200 400,100 620,200" fill="#424242"/>
+  <!-- Door -->
+  <rect x="360" y="370" width="80" height="130" rx="40" fill="#191919"/>
+  <!-- Paintings on wall -->
+  <rect x="250" y="260" width="60" height="50" rx="4" fill="#BA9972" opacity="0.6"/>
+  <rect x="490" y="260" width="60" height="50" rx="4" fill="#BA9972" opacity="0.6"/>
+  <!-- Audio waves -->
+  <g transform="translate(400, 80)" opacity="0.7">
+    <path d="M-30,0 Q-15,-20 0,0 Q15,20 30,0" stroke="#BA9972" stroke-width="2" fill="none"/>
+    <path d="M-40,0 Q-20,-30 0,0 Q20,30 40,0" stroke="#BA9972" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M-50,0 Q-25,-40 0,0 Q25,40 50,0" stroke="#BA9972" stroke-width="2" fill="none" opacity="0.3"/>
+  </g>
+  <!-- Headphone icon -->
+  <circle cx="400" cy="55" r="15" stroke="#BA9972" stroke-width="2" fill="none"/>
+  <path d="M385,55 L385,70 Q385,80 395,80 L395,65" stroke="#BA9972" stroke-width="3" fill="none"/>
+  <path d="M415,55 L415,70 Q415,80 405,80 L405,65" stroke="#BA9972" stroke-width="3" fill="none"/>
+  <!-- Label -->
+  <text x="400" y="560" text-anchor="middle" fill="#C4C4C4" font-family="sans-serif" font-size="16">博物館智慧語音導覽</text>
+</svg>

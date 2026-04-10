@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#191919"/>
+  <!-- Gallery wall -->
+  <rect x="50" y="100" width="700" height="300" fill="#242424"/>
+  <!-- Paintings -->
+  <rect x="100" y="140" width="150" height="120" rx="4" fill="#353535" stroke="#BA9972" stroke-width="1"/>
+  <rect x="120" y="160" width="110" height="80" rx="2" fill="url(#grad1)"/>
+  <rect x="330" y="130" width="140" height="160" rx="4" fill="#353535" stroke="#BA9972" stroke-width="1"/>
+  <rect x="345" y="145" width="110" height="130" rx="2" fill="url(#grad2)"/>
+  <rect x="550" y="150" width="150" height="100" rx="4" fill="#353535" stroke="#BA9972" stroke-width="1"/>
+  <rect x="565" y="165" width="120" height="70" rx="2" fill="url(#grad3)"/>
+  <!-- Spotlights -->
+  <polygon points="175,100 155,140 195,140" fill="#DDB586" opacity="0.1"/>
+  <polygon points="400,100 380,130 420,130" fill="#DDB586" opacity="0.1"/>
+  <polygon points="625,100 605,150 645,150" fill="#DDB586" opacity="0.1"/>
+  <!-- AI interaction bubbles -->
+  <g transform="translate(400, 340)">
+    <rect x="-80" y="0" width="160" height="40" rx="20" fill="#7A654B" opacity="0.6"/>
+    <text x="0" y="25" text-anchor="middle" fill="#FEE3C4" font-family="sans-serif" font-size="12">AI 互動問答中...</text>
+  </g>
+  <defs>
+    <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#BA9972" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#7A654B" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="grad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#DDB586" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#504131" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="grad3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FEE3C4" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#BA9972" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <text x="400" y="470" text-anchor="middle" fill="#C4C4C4" font-family="sans-serif" font-size="14">台北市立美術館 — AI 互動導覽</text>
+</svg>

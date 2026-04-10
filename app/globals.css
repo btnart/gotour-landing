@@ -1,26 +1,247 @@
 @import "tailwindcss";
 
+/* ===== ADS Design Tokens ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Surface --- */
+  --ads-surface: #191919;
+  --ads-surface-dim: #191919;
+  --ads-surface-bright: #4D4D4D;
+  --ads-surface-container-lowest: #000000;
+  --ads-surface-container-low: #191919;
+  --ads-surface-container: #353535;
+  --ads-surface-container-high: #424242;
+  --ads-surface-container-highest: #595959;
+  --ads-on-surface: #E7E7E7;
+  --ads-on-surface-variant: #C4C4C4;
+  --ads-on-surface-hint: #858585;
+  --ads-inverse-surface: #E2E2E2;
+  --ads-inverse-on-surface: #4D4D4D;
+  --ads-inverse-primary: #BA9972;
+
+  /* --- Primary --- */
+  --ads-primary: #BA9972;
+  --ads-on-primary: #0F0C09;
+  --ads-primary-container: #7A654B;
+  --ads-on-primary-container: #FEE3C4;
+
+  /* --- Secondary --- */
+  --ads-secondary: #C4C4C4;
+  --ads-on-secondary: #191919;
+  --ads-secondary-container: #595959;
+  --ads-on-secondary-container: #E7E7E7;
+
+  /* --- Tertiary --- */
+  --ads-tertiary: #858585;
+  --ads-on-tertiary: #FFFFFF;
+  --ads-tertiary-container: #474747;
+  --ads-on-tertiary-container: #F8F8F8;
+
+  /* --- Error --- */
+  --ads-error: #F36363;
+  --ads-on-error: #2B0706;
+  --ads-error-container: #410E0B;
+  --ads-on-error-container: #EE8484;
+
+  /* --- Success --- */
+  --ads-success: #82D28A;
+  --ads-on-success: #002105;
+  --ads-success-container: #00390F;
+  --ads-on-success-container: #86DD8F;
+
+  /* --- Warning --- */
+  --ads-warning: #EFCE5A;
+  --ads-on-warning: #3B2F00;
+  --ads-warning-container: #534300;
+  --ads-on-warning-container: #F4DB85;
+
+  /* --- Background / Outline / Shadow --- */
+  --ads-background: #000000;
+  --ads-on-background: #E7E7E7;
+  --ads-outline: #858585;
+  --ads-outline-variant-medium: #6D6D6D;
+  --ads-outline-variant: #595959;
+  --ads-shadow: #000000;
+  --ads-scrim: rgba(0,0,0,0.5);
+
+  /* --- Add-ons --- */
+  --ads-section-bg: #000000;
+  --ads-primary-fixed: #DDB586;
+  --ads-on-primary-fixed: #0F0C09;
+  --ads-primary-fixed-dim: #BA9972;
+  --ads-secondary-fixed: #F0F0F0;
+
+  /* --- Shape / Corner --- */
+  --corner-none: 0px;
+  --corner-xs: 4px;
+  --corner-sm: 8px;
+  --corner-md: 12px;
+  --corner-lg: 16px;
+  --corner-lg-inc: 20px;
+  --corner-xl: 28px;
+  --corner-xl-inc: 32px;
+  --corner-xxl: 48px;
+  --corner-full: 1000px;
+
+  /* --- Opacity / State Layer --- */
+  --opacity-hover: 0.08;
+  --opacity-focus: 0.10;
+  --opacity-pressed: 0.10;
+  --opacity-dragged: 0.16;
+  --opacity-disabled-container: 0.12;
+  --opacity-disabled-content: 0.38;
+
+  /* --- Elevation (Section 7) --- */
+  --elevation-1: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px 1px rgba(0,0,0,0.15);
+  --elevation-2: 0 1px 2px rgba(0,0,0,0.30), 0 2px 6px 2px rgba(0,0,0,0.15);
+  --elevation-3: 0 1px 3px rgba(0,0,0,0.30), 0 4px 8px 3px rgba(0,0,0,0.15);
+  --elevation-4: 0 2px 3px rgba(0,0,0,0.30), 0 6px 10px 4px rgba(0,0,0,0.15);
+  --elevation-5: 0 4px 4px rgba(0,0,0,0.30), 0 8px 12px 6px rgba(0,0,0,0.15);
+
+  /* --- Space (Section 8) --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 20px;
+  --space-5: 24px;
+  --space-6: 32px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Colors */
+  --color-background: var(--ads-background);
+  --color-foreground: var(--ads-on-background);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-surface: var(--ads-surface);
+  --color-surface-dim: var(--ads-surface-dim);
+  --color-surface-bright: var(--ads-surface-bright);
+  --color-surface-lowest: var(--ads-surface-container-lowest);
+  --color-surface-low: var(--ads-surface-container-low);
+  --color-surface-container: var(--ads-surface-container);
+  --color-surface-high: var(--ads-surface-container-high);
+  --color-surface-highest: var(--ads-surface-container-highest);
+  --color-on-surface: var(--ads-on-surface);
+  --color-on-surface-variant: var(--ads-on-surface-variant);
+  --color-on-surface-hint: var(--ads-on-surface-hint);
+
+  --color-primary: var(--ads-primary);
+  --color-on-primary: var(--ads-on-primary);
+  --color-primary-container: var(--ads-primary-container);
+  --color-on-primary-container: var(--ads-on-primary-container);
+
+  --color-secondary: var(--ads-secondary);
+  --color-on-secondary: var(--ads-on-secondary);
+  --color-secondary-container: var(--ads-secondary-container);
+  --color-on-secondary-container: var(--ads-on-secondary-container);
+
+  --color-tertiary: var(--ads-tertiary);
+  --color-on-tertiary: var(--ads-on-tertiary);
+  --color-tertiary-container: var(--ads-tertiary-container);
+  --color-on-tertiary-container: var(--ads-on-tertiary-container);
+
+  --color-error: var(--ads-error);
+  --color-success: var(--ads-success);
+  --color-warning: var(--ads-warning);
+
+  --color-outline: var(--ads-outline);
+  --color-outline-variant: var(--ads-outline-variant);
+
+  --color-primary-fixed: var(--ads-primary-fixed);
+  --color-primary-fixed-dim: var(--ads-primary-fixed-dim);
+  --color-secondary-fixed: var(--ads-secondary-fixed);
+
+  --color-inverse-surface: var(--ads-inverse-surface);
+  --color-inverse-on-surface: var(--ads-inverse-on-surface);
+
+  /* Border Radius */
+  --radius-none: var(--corner-none);
+  --radius-xs: var(--corner-xs);
+  --radius-sm: var(--corner-sm);
+  --radius-md: var(--corner-md);
+  --radius-lg: var(--corner-lg);
+  --radius-lg-inc: var(--corner-lg-inc);
+  --radius-xl: var(--corner-xl);
+  --radius-xl-inc: var(--corner-xl-inc);
+  --radius-xxl: var(--corner-xxl);
+  --radius-full: var(--corner-full);
+
+  /* Font */
+  --font-brand: 'Noto Sans TC', sans-serif;
+
+  /* Elevation */
+  --shadow-elevation-1: var(--elevation-1);
+  --shadow-elevation-2: var(--elevation-2);
+  --shadow-elevation-3: var(--elevation-3);
+  --shadow-elevation-4: var(--elevation-4);
+  --shadow-elevation-5: var(--elevation-5);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ads-background);
+  color: var(--ads-on-background);
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+/* ===== ADS Typography Utilities ===== */
+/* Display/Headline = SemiBold 600, Title/Label = Medium 500, Body = Regular 400 */
+/* Using !important to ensure ADS tokens override Tailwind utilities */
+
+.ads-display-large   { font-size: 57px !important; line-height: 64px !important; letter-spacing: -0.25px !important; font-weight: 600 !important; }
+.ads-display-medium  { font-size: 45px !important; line-height: 52px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+.ads-display-small   { font-size: 36px !important; line-height: 44px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+.ads-headline-large  { font-size: 32px !important; line-height: 40px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+.ads-headline-medium { font-size: 28px !important; line-height: 36px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+.ads-headline-small  { font-size: 24px !important; line-height: 32px !important; letter-spacing: 0 !important;       font-weight: 600 !important; }
+.ads-title-large     { font-size: 18px !important; line-height: 28px !important; letter-spacing: 0 !important;       font-weight: 500 !important; }
+.ads-title-medium    { font-size: 16px !important; line-height: 24px !important; letter-spacing: 0.15px !important;  font-weight: 500 !important; }
+.ads-title-small     { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important;   font-weight: 500 !important; }
+.ads-label-large     { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important;   font-weight: 500 !important; }
+.ads-label-medium    { font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.5px !important;   font-weight: 500 !important; }
+.ads-label-small     { font-size: 11px !important; line-height: 16px !important; letter-spacing: 0.5px !important;   font-weight: 500 !important; }
+.ads-body-large      { font-size: 16px !important; line-height: 24px !important; letter-spacing: 0.5px !important;   font-weight: 400 !important; }
+.ads-body-medium     { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.25px !important;  font-weight: 400 !important; }
+.ads-body-small      { font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.4px !important;   font-weight: 400 !important; }
+
+/* Mobile overrides */
+@media (max-width: 768px) {
+  .ads-display-medium  { font-size: 36px !important; line-height: 44px !important; }
+  .ads-display-small   { font-size: 32px !important; line-height: 40px !important; }
+  .ads-headline-large  { font-size: 28px !important; line-height: 32px !important; }
+  .ads-headline-medium { font-size: 24px !important; line-height: 36px !important; }
+  .ads-headline-small  { font-size: 20px !important; line-height: 28px !important; }
+  .ads-title-large     { font-size: 16px !important; line-height: 24px !important; letter-spacing: 0.15px !important; }
+  .ads-title-medium    { font-size: 14px !important; line-height: 20px !important; letter-spacing: 0.1px !important; }
+  .ads-title-small     { font-size: 12px !important; line-height: 16px !important; letter-spacing: 0.5px !important; }
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ads-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ads-surface-container-high);
+  border-radius: var(--corner-full);
+}
+
+/* ===== Keyframe Animations ===== */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes waveMove {
+  0% { transform: scaleY(1); }
+  100% { transform: scaleY(0.6); }
 }

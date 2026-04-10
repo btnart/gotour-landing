@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#1A1500"/>
+  <!-- Taroko gorge walls -->
+  <polygon points="0,0 200,0 100,500 0,500" fill="#353535"/>
+  <polygon points="800,0 600,0 700,500 800,500" fill="#424242"/>
+  <!-- River -->
+  <path d="M300,500 Q350,400 320,300 Q340,200 380,100 Q400,50 420,0" fill="#1A3D4D" opacity="0.4"/>
+  <path d="M500,500 Q450,400 480,300 Q460,200 420,100 Q400,50 420,0" fill="#1A3D4D" opacity="0.3"/>
+  <!-- Data overlay panel -->
+  <rect x="250" y="50" width="300" height="180" rx="16" fill="#353535" opacity="0.85"/>
+  <text x="290" y="85" fill="#EFCE5A" font-family="sans-serif" font-size="13" font-weight="600">花蓮觀光數據儀表板</text>
+  <!-- Pie chart -->
+  <circle cx="330" cy="150" r="35" fill="#534300" opacity="0.5"/>
+  <path d="M330,115 A35,35 0 0,1 360,168 L330,150Z" fill="#EFCE5A" opacity="0.7"/>
+  <path d="M360,168 A35,35 0 0,1 300,168 L330,150Z" fill="#BA9972" opacity="0.6"/>
+  <!-- Stats -->
+  <text x="400" y="130" fill="#C4C4C4" font-family="sans-serif" font-size="10">月訪客數</text>
+  <text x="400" y="150" fill="#EFCE5A" font-family="sans-serif" font-size="18" font-weight="600">128K</text>
+  <text x="400" y="175" fill="#82D28A" font-family="sans-serif" font-size="10">↑ 23% vs 去年</text>
+  <text x="400" y="210" fill="#C4C4C4" font-family="sans-serif" font-size="10">導覽使用率 67%</text>
+  <!-- Scenic markers -->
+  <circle cx="350" cy="320" r="6" fill="#EFCE5A" opacity="0.7"/>
+  <circle cx="420" cy="280" r="6" fill="#EFCE5A" opacity="0.7"/>
+  <circle cx="380" cy="400" r="6" fill="#EFCE5A" opacity="0.7"/>
+  <text x="400" y="470" text-anchor="middle" fill="#C4C4C4" font-family="sans-serif" font-size="14">花蓮縣觀光處 — 觀光數據分析</text>
+</svg>
